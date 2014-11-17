@@ -3,6 +3,8 @@
 Light weight, cross platform, file system watcher. 
 
 
+### Should work windows, but not yet tested becase I do not have access to a windows machine now. If you do, I would love for you to run the specs and see if it works :)
+
 [![Build Status](https://travis-ci.org/stephan-nordnes-eriksen/feather_watch.svg?branch=master)](https://travis-ci.org/stephan-nordnes-eriksen/feather_watch)
 
 ## Installation
