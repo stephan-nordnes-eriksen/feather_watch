@@ -26,7 +26,7 @@ Or install it yourself as:
 	require "feather_watch"
 	callback = lambda{|e| puts "Event #{e[:status]} on file #{e[:file]}"}
 	paths_to_watch = "/" #can be a string or array of string, eg: ["/home/data", "/home/pictures"]
-	watcher = FeatherWatch::Watcher.new(paths_to_watch, callback)
+	watcher = FeatherWatch.new(paths_to_watch, callback)
 	watcher.start #non-blocking
 
 	#To stop:
