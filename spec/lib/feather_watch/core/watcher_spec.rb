@@ -205,5 +205,31 @@ describe FeatherWatch do
 		sleep 0.1 #need to wait for file event to propegate.
 		watcher.stop
 	end
+
+	it "returns correct file path and status when file is moved" do
+		path = File.join(Dir.pwd, "test_folder")
+		callback_spy = spy("Callback Spy")
+		verbose = false
+		
+		file_path = File.join(Dir.pwd, "test_folder", "new_file")
+		file_path_new = File.join(Dir.pwd, "test_folder", "new_file_new")
+
+		FileUtils.touch(file_path)
+		sleep 0.1 
+		
+		expect(callback_spy).to receive(:call).with({status: :removed ,file: file_path})
+		if FeatherWatch::OS.mac?
+			expect(callback_spy).to receive(:call).with({status: :modified ,file: file_path_new})
+		else
+			expect(callback_spy).to receive(:call).with({status: :added ,file: file_path_new}) 
+		end
+
+		watcher = FeatherWatch::Watcher.new(path,callback_spy,verbose)
+		watcher.start
+		sleep 0.1 #need to wait for watcher to properly start
+		FileUtils.mv(file_path, file_path_new)
+		sleep 0.1 #need to wait for file event to propegate.
+		watcher.stop
+	end
 end
 
