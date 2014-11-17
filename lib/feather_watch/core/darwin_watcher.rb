@@ -4,7 +4,10 @@ module FeatherWatch::Core
 			@verbose = verbose
 			puts "Initializing mac watcher" if @verbose
 			@fs_event = FSEvent.new
-			@fs_event.watch directories, {file_events: true} do |changed_files|
+			options = { :no_defer => true,
+						:file_events => true }
+
+			@fs_event.watch directories, options do |changed_files|
 				changed_files.each do |f|
 					if File.file?(f)
 						puts "Change on file: #{f}" if @verbose
