@@ -11,4 +11,7 @@ require 'rb-inotify' if FeatherWatch::OS.linux?
 require 'wdm'        if FeatherWatch::OS.windows?
 
 module FeatherWatch
+	def self.new(*args)
+		FeatherWatch::Watcher.new(*args)
+	end
 end
