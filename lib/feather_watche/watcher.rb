@@ -1,4 +1,4 @@
-module FileSystemWatcher
+module FeatherWatch
 	class Watcher
 
 		# Public: Initialize the file system watcher. 
@@ -9,14 +9,18 @@ module FileSystemWatcher
 		#
 		# Examples
 		#
-		#   FileSystemWatcher::Watcher.new([File.join(Dir.home, 'Desktop')], lambda{|e| puts "got event with status: #{e[:status]} on file #{e[:file]}"})
+		#   FeatherWatch::Watcher.new([File.join(Dir.home, 'Desktop')], lambda{|e| puts "got event with status: #{e[:status]} on file #{e[:file]}"})
 		#
 		# Returns a Watcher object.
 		def initialize(directories, callback, verbose= false)
 			@verbose = verbose
-			initialize_mac(directories, callback)     if FileSystemWatcher::OS.mac?
-			initialize_linux(directories, callback)   if FileSystemWatcher::OS.linux?
-			initialize_windows(directories, callback) if FileSystemWatcher::OS.windows?
+			dir = directories
+			dir = [directories] if directories.is_a?(String)
+			raise "Unknown datatype for directories. Was: #{dir}" unless dir.is_a?(Array)
+
+			initialize_mac(dir, callback)     if FeatherWatch::OS.mac?
+			initialize_linux(dir, callback)   if FeatherWatch::OS.linux?
+			initialize_windows(dir, callback) if FeatherWatch::OS.windows?
 		end
 
 		# Public: Starts the watcher.
@@ -28,9 +32,9 @@ module FileSystemWatcher
 		#
 		# Returns nil
 		def start
-			start_mac     if FileSystemWatcher::OS.mac?
-			start_linux   if FileSystemWatcher::OS.linux?
-			start_windows if FileSystemWatcher::OS.windows?
+			start_mac     if FeatherWatch::OS.mac?
+			start_linux   if FeatherWatch::OS.linux?
+			start_windows if FeatherWatch::OS.windows?
 		end
 
 		# Public: Stops the watcher.
@@ -42,9 +46,9 @@ module FileSystemWatcher
 		#
 		# Returns nil
 		def stop
-			stop_mac     if FileSystemWatcher::OS.mac?
-			stop_linux   if FileSystemWatcher::OS.linux?
-			stop_windows if FileSystemWatcher::OS.windows?
+			stop_mac     if FeatherWatch::OS.mac?
+			stop_linux   if FeatherWatch::OS.linux?
+			stop_windows if FeatherWatch::OS.windows?
 		end
 
 		private
@@ -72,13 +76,33 @@ module FileSystemWatcher
 				#Avaliable events: :access, :attrib, :close_write, :close_nowrite, :create, :delete, :delete_self, :ignored, :modify, :move_self, :moved_from, :moved_to, :open
 				notifier.watch(:create, :delete, :delete_self, :modify, :move_self, :moved_from, :moved_to) do |event|
 					#TODO: This information is probably in the event, but I'm on a mac now, so I can't test it properly
-					if File.file?(event.name)
-						puts "Change on file: #{event.name}" if @verbose
-						callback.call({status: :modified, file: event.name})
+					
+					if    !([:attrib, :close_write] & event.flags ).empty?
+						puts "Change on file: #{event.absolute_name}" if @verbose
+						callback.call({status: :modified, file: event.absolute_name})
+					elsif !([:moved_to]             & event.flags ).empty?
+						puts "File added: #{event.absolute_name}" if @verbose
+						callback.call({status: :added, file: event.absolute_name})
+					elsif !([:moved_from]           & event.flags ).empty?
+						puts "File removed: #{event.absolute_name}" if @verbose
+						callback.call({status: :removed, file: event.absolute_name})
+					elsif !([:create]               & event.flags ).empty?
+						puts "File added: #{event.absolute_name}" if @verbose
+						callback.call({status: :added, file: event.absolute_name})
+					elsif !([:delete]               & event.flags ).empty?
+						puts "File removed: #{event.absolute_name}" if @verbose
+						callback.call({status: :removed, file: event.absolute_name})
 					else
-						puts "Removed file: #{event.name}" if @verbose
-						callback.call({status: :removed, file: event.name})
+						puts "Unhandled status flags: #{event.flags} for file #{event.absolute_name}" if @verbose
 					end
+
+					# if File.file?(event.absolute_name)
+					# 	puts "Change on file: #{event.absolute_name}" if @verbose
+					# 	callback.call({status: :modified, file: event.absolute_name})
+					# else
+					# 	puts "Removed file: #{event.absolute_name}" if @verbose
+					# 	callback.call({status: :removed, file: event.absolute_name})
+					# end
 				end
 			end
 		end
@@ -90,16 +114,37 @@ module FileSystemWatcher
 				@listener_object_windows << monitor
 				monitor.watch_recursively(dir, :files) do |change|
 					#TODO: Have not tested this. It might work
-					if File.file?(change)
-						puts "Change on file: #{change}" if @verbose
-						callback.call({status: :modified, file: change})
+
+					case change.type
+					when :added, :renamed_new_file
+						puts "File added: #{change.path}" if @verbose
+						callback.call({status: :added, file: change.path})
+					when :removed, :renamed_old_file
+						puts "Removed file: #{change.path}" if @verbose
+						callback.call({status: :removed, file: change.path})
+					when :modified, :attrib
+						puts "File modified: #{change.path}" if @verbose
+						callback.call({status: :modified, file: change.path})
 					else
-						puts "Removed file: #{change}" if @verbose
-						callback.call({status: :removed, file: change})
+						puts "Unhandled status type: #{change.type} for file #{change.path}" if @verbose
 					end
-					
 				end	
 			end
+
+			change.type
+
+				@worker.watch_recursively(dir.to_s, :files) do |change|
+					callback.call([:file, change])
+				end
+
+				@worker.watch_recursively(dir.to_s, :directories) do |change|
+					callback.call([:dir, change])
+				end
+
+				events = [:attributes, :last_write]
+					@worker.watch_recursively(dir.to_s, *events) do |change|
+					callback.call([:attr, change])
+				end
 		end
 		def start_mac
 			puts "Starting mac watcher" if @verbose
