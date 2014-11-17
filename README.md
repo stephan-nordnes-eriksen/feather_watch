@@ -3,7 +3,7 @@
 Light weight, cross platform, file system watcher. 
 
 
-(!) Should work on windows, but I have not yet tested it becase I do not have access to a windows machine right now. If you do, I would love for you to run the specs and see if it works :)
+(!) Should work on windows, but I have not yet tested it because I do not have access to a windows machine right now. If you do, I would love for you to run the specs and see if it works :)
 
 [![Build Status](https://travis-ci.org/stephan-nordnes-eriksen/feather_watch.svg?branch=master)](https://travis-ci.org/stephan-nordnes-eriksen/feather_watch)
 
@@ -40,9 +40,9 @@ Or install it yourself as:
 
 
 # Important Notes!
-Events on OSx, also known as darwin, is currenty an approximation as the underlying libraries does not currently support actual events. Thus on OSx, you get `:removed` if the file recieved does not exist by checking File.file?(the_file). If it does exist you get `:modified`. So you will **not** get any `:added` events on OSx.
+Events on OSx, also known as darwin, is current an approximation as the underlying libraries does not currently support actual events. Thus on OSx, you get `:removed` if the file received does not exist by checking File.file?(the_file). If it does exist you get `:modified`. So you will **not** get any `:added` events on OSx.
 
-Feather Watch will recieve very many file events, even for temp files. Care should be taken when handling the events. Make sure to only process what you need. For instance, you should check against temp-files, and skip those events. Example:
+Feather Watch will receive very many file events, even for temp files. Care should be taken when handling the events. Make sure to only process what you need. For instance, you should check against temp-files, and skip those events. Example:
 
 	#black list approach
 	un_accepted_file_types = ["tmp", "cache", "db"]
