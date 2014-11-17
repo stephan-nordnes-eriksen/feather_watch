@@ -1,4 +1,4 @@
-# FeatherWatch
+![Feather Watch](/Feather Watch.png?raw=true)
 
 Light weight, cross platform, file system watcher. 
 
@@ -27,7 +27,16 @@ Or install it yourself as:
 	#To stop:
 	watcher.stop
 
-# IMPORTANT!
+### Received statuses
+
+:added
+:modified
+:removed
+
+
+# Important Notes!
+Events on OSx, also known as darwin, is currenty an approximation as the underlying libraries does not currently support actual events. Thus on OSx, you get ":removed" if the file recieved does not exist by checking File.file?(the_file). If it does exist you get ":modified". So you will *not* get any ":added" events on OSx.
+
 Feather Watch will recieve very many file events, even for temp files. Care should be taken when handling the events. Make sure to only process what you need. For instance, you should check against temp-files, and skip those events. Example:
 
 	#black list approach
@@ -40,11 +49,6 @@ Feather Watch will recieve very many file events, even for temp files. Care shou
 
 You need to take care to filter out what you do not need for each target platform. 
 
-### Received statuses
-
-:added
-:modified
-:removed
 
 
 
