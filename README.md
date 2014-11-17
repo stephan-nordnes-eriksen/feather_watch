@@ -2,6 +2,9 @@
 
 Light weight, cross platform, file system watcher. 
 
+
+![Build Status](https://travis-ci.com/stephan-nordnes-eriksen/feather_watch.svg)]
+
 ## Installation
 
 Add this line to your application's Gemfile:
