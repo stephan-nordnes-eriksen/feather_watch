@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = FeatherWatch::VERSION
   spec.authors       = ["Stephan Nordnes Eriksen"]
   spec.email         = ["stephanruler@gmail.com"]
-  spec.summary       = %q{Barebones, simple, and super-fast file system watcher}
+  spec.summary       = %q{Barebones, simple, and fast file system watcher}
   spec.description   = %q{A barebones file system watcher which uses native file system events for Linux, OSx, and Windows.}
   spec.homepage      = ""
   spec.license       = "MIT"
