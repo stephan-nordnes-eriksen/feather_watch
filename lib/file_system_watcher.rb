@@ -1,5 +1,6 @@
 require "file_system_watcher/version"
 require "file_system_watcher/os"
+require "file_system_watcher/watcher"
 
 
 require 'rb-fsevent' if FileSystemWatcher::OS.mac?

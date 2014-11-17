@@ -1,5 +1,5 @@
 module FileSystemWatcher
-	class Watcter
+	class Watcher
 		def initialize(directories, callback, verbose=false)
 			@verbose = verbose
 			initialize_mac(directories, callback)     if FileSystemWatcher::OS.mac?
@@ -24,7 +24,7 @@ module FileSystemWatcher
 			@listener_object_mac = FSEvent.new
 			@listener_object_mac.watch directories, {file_events: true} do |changed_files|
 				changed_files.each do |f|
-					callback(f)
+					callback.call(f)
 				end
 			end
 		end
@@ -36,7 +36,7 @@ module FileSystemWatcher
 				@listener_object_linux << notifier
 				#Avaliable events: :access, :attrib, :close_write, :close_nowrite, :create, :delete, :delete_self, :ignored, :modify, :move_self, :moved_from, :moved_to, :open
 				notifier.watch(:create, :delete, :delete_self, :modify, :move_self, :moved_from, :moved_to) do |event|
-					callback(event.name)
+					callback.call(event.name)
 				end
 			end
 		end
@@ -47,7 +47,7 @@ module FileSystemWatcher
 				monitor = WDM::Monitor.new
 				@listener_object_windows << monitor
 				monitor.watch_recursively(dir, :files) do |change|
-					callback(change)
+					callback.call(change)
 				end	
 			end
 		end

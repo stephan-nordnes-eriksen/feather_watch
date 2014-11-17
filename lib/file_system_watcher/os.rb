@@ -1,17 +1,17 @@
 module FileSystemWatcher::OS
-  def OS.windows?
+  def self.windows?
     (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
   end
 
-  def OS.mac?
+  def self.mac?
    (/darwin/ =~ RUBY_PLATFORM) != nil
   end
 
-  def OS.unix?
-    !OS.windows?
+  def self.unix?
+    !self.windows?
   end
 
-  def OS.linux?
-    OS.unix? and not OS.mac?
+  def self.linux?
+    self.unix? and not self.mac?
   end
 end
