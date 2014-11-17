@@ -8,7 +8,7 @@ module FeatherWatch::Core
 				notifier = INotify::Notifier.new
 				@notifiers << notifier
 				#Avaliable events: :access, :attrib, :close_write, :close_nowrite, :create, :delete, :delete_self, :ignored, :modify, :move_self, :moved_from, :moved_to, :open
-				notifier.watch(:create, :attrib, :delete, :close_write, :delete_self, :modify, :move_self, :moved_from, :moved_to) do |event|
+				notifier.watch(dir, :create, :attrib, :delete, :close_write, :delete_self, :modify, :move_self, :moved_from, :moved_to) do |event|
 					#TODO: This information is probably in the event, but I'm on a mac now, so I can't test it properly
 					
 					if    !([:attrib, :close_write, :modify] & event.flags ).empty?
