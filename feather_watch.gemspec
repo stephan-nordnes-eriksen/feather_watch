@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["stephanruler@gmail.com"]
   spec.summary       = %q{Barebones, simple, and fast file system watcher}
   spec.description   = %q{A barebones file system watcher which uses native file system events for Linux, OSx, and Windows.}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/stephan-nordnes-eriksen/feather_watch"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
