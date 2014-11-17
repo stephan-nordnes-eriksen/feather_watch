@@ -3,7 +3,7 @@
 Light weight, cross platform, file system watcher. 
 
 
-![Build Status](https://travis-ci.com/stephan-nordnes-eriksen/feather_watch.svg)
+[![Build Status](https://travis-ci.org/stephan-nordnes-eriksen/feather_watch.svg?branch=master)](https://travis-ci.org/stephan-nordnes-eriksen/feather_watch)
 
 ## Installation
 
