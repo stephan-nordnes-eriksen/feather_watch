@@ -18,9 +18,9 @@ module FeatherWatch
 			dir = [directories] if directories.is_a?(String)
 			raise "Unknown datatype for directories. Was: #{dir}" unless dir.is_a?(Array)
 
-			@listener = DarwinWatcher(dir, callback, verbose)  if FeatherWatch::OS.mac?
-			@listener = LinuxWatcher(dir, callback, verbose)   if FeatherWatch::OS.linux?
-			@listener = WindowsWatcher(dir, callback, verbose) if FeatherWatch::OS.windows?
+			@listener = FeatherWatch::Core::DarwinWatcher.new(dir, callback, verbose)  if FeatherWatch::OS.mac?
+			@listener = FeatherWatch::Core::LinuxWatcher.new(dir, callback, verbose)   if FeatherWatch::OS.linux?
+			@listener = FeatherWatch::Core::WindowsWatcher.new(dir, callback, verbose) if FeatherWatch::OS.windows?
 		end
 
 		# Public: Starts the watcher.
