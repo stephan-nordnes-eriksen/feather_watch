@@ -24,6 +24,9 @@ Or install it yourself as:
 	watcher = FeatherWatch::Watcher.new(paths_to_watch, callback)
 	watcher.start #non-blocking
 
+	#To stop:
+	watcher.stop
+
 # IMPORTANT!
 Feather Watch will recieve very many file events, even for temp files. Care should be taken when handling the events. Make sure to only process what you need. For instance, you should check against temp-files, and skip those events. Example:
 

@@ -18,9 +18,9 @@ module FeatherWatch
 			dir = [directories] if directories.is_a?(String)
 			raise "Unknown datatype for directories. Was: #{dir}" unless dir.is_a?(Array)
 
-			initialize_mac(dir, callback)     if FeatherWatch::OS.mac?
-			initialize_linux(dir, callback)   if FeatherWatch::OS.linux?
-			initialize_windows(dir, callback) if FeatherWatch::OS.windows?
+			@listener = DarwinWatcher(dir, callback, verbose)  if FeatherWatch::OS.mac?
+			@listener = LinuxWatcher(dir, callback, verbose)   if FeatherWatch::OS.linux?
+			@listener = WindowsWatcher(dir, callback, verbose) if FeatherWatch::OS.windows?
 		end
 
 		# Public: Starts the watcher.
@@ -32,9 +32,7 @@ module FeatherWatch
 		#
 		# Returns nil
 		def start
-			start_mac     if FeatherWatch::OS.mac?
-			start_linux   if FeatherWatch::OS.linux?
-			start_windows if FeatherWatch::OS.windows?
+			@listener.start if @listener
 		end
 
 		# Public: Stops the watcher.
@@ -46,143 +44,7 @@ module FeatherWatch
 		#
 		# Returns nil
 		def stop
-			stop_mac     if FeatherWatch::OS.mac?
-			stop_linux   if FeatherWatch::OS.linux?
-			stop_windows if FeatherWatch::OS.windows?
-		end
-
-		private
-		def initialize_mac(directories, callback)
-			puts "Initializing mac watcher" if @verbose
-			@listener_object_mac = FSEvent.new
-			@listener_object_mac.watch directories, {file_events: true} do |changed_files|
-				changed_files.each do |f|
-					if File.file?(f)
-						puts "Change on file: #{f}" if @verbose
-						callback.call({status: :modified, file: f})
-					else
-						puts "Removed file: #{f}" if @verbose
-						callback.call({status: :removed, file: f})
-					end
-				end
-			end
-		end
-		def initialize_linux(directories, callback)
-			puts "Initializing linux watcher" if @verbose
-			@listener_object_linux = []
-			directories.each do |dir|
-				notifier = INotify::Notifier.new
-				@listener_object_linux << notifier
-				#Avaliable events: :access, :attrib, :close_write, :close_nowrite, :create, :delete, :delete_self, :ignored, :modify, :move_self, :moved_from, :moved_to, :open
-				notifier.watch(:create, :delete, :delete_self, :modify, :move_self, :moved_from, :moved_to) do |event|
-					#TODO: This information is probably in the event, but I'm on a mac now, so I can't test it properly
-					
-					if    !([:attrib, :close_write] & event.flags ).empty?
-						puts "Change on file: #{event.absolute_name}" if @verbose
-						callback.call({status: :modified, file: event.absolute_name})
-					elsif !([:moved_to]             & event.flags ).empty?
-						puts "File added: #{event.absolute_name}" if @verbose
-						callback.call({status: :added, file: event.absolute_name})
-					elsif !([:moved_from]           & event.flags ).empty?
-						puts "File removed: #{event.absolute_name}" if @verbose
-						callback.call({status: :removed, file: event.absolute_name})
-					elsif !([:create]               & event.flags ).empty?
-						puts "File added: #{event.absolute_name}" if @verbose
-						callback.call({status: :added, file: event.absolute_name})
-					elsif !([:delete]               & event.flags ).empty?
-						puts "File removed: #{event.absolute_name}" if @verbose
-						callback.call({status: :removed, file: event.absolute_name})
-					else
-						puts "Unhandled status flags: #{event.flags} for file #{event.absolute_name}" if @verbose
-					end
-
-					# if File.file?(event.absolute_name)
-					# 	puts "Change on file: #{event.absolute_name}" if @verbose
-					# 	callback.call({status: :modified, file: event.absolute_name})
-					# else
-					# 	puts "Removed file: #{event.absolute_name}" if @verbose
-					# 	callback.call({status: :removed, file: event.absolute_name})
-					# end
-				end
-			end
-		end
-		def initialize_windows(directories, callback)
-			puts "Initializing windows watcher" if @verbose
-			@listener_object_windows = []
-			directories.each do |dir|
-				monitor = WDM::Monitor.new
-				@listener_object_windows << monitor
-				monitor.watch_recursively(dir, :files) do |change|
-					#TODO: Have not tested this. It might work
-
-					case change.type
-					when :added, :renamed_new_file
-						puts "File added: #{change.path}" if @verbose
-						callback.call({status: :added, file: change.path})
-					when :removed, :renamed_old_file
-						puts "Removed file: #{change.path}" if @verbose
-						callback.call({status: :removed, file: change.path})
-					when :modified, :attrib
-						puts "File modified: #{change.path}" if @verbose
-						callback.call({status: :modified, file: change.path})
-					else
-						puts "Unhandled status type: #{change.type} for file #{change.path}" if @verbose
-					end
-				end	
-			end
-
-			change.type
-
-				@worker.watch_recursively(dir.to_s, :files) do |change|
-					callback.call([:file, change])
-				end
-
-				@worker.watch_recursively(dir.to_s, :directories) do |change|
-					callback.call([:dir, change])
-				end
-
-				events = [:attributes, :last_write]
-					@worker.watch_recursively(dir.to_s, *events) do |change|
-					callback.call([:attr, change])
-				end
-		end
-		def start_mac
-			puts "Starting mac watcher" if @verbose
-			Thread.new do
-				@listener_object_mac.run
-			end
-		end
-		def start_linux
-			puts "Starting linux watcher" if @verbose
-			@listener_object_linux.each do |monitor|
-				Thread.new do
-					monitor.run
-				end
-			end
-		end
-		def start_windows
-			puts "Starting windows watcher" if @verbose
-			@listener_object_windows.each do |monitor|
-				Thread.new do
-					monitor.run!
-				end
-			end
-		end
-		def stop_mac
-			puts "Stopping mac watcher" if @verbose
-			@listener_object_mac.stop
-		end
-		def stop_linux
-			puts "Stopping linux watcher" if @verbose
-			@listener_object_linux.each do |notifier|
-				notifier.stop
-			end
-		end
-		def stop_windows
-			puts "Stopping windows watcher" if @verbose
-			@listener_object_windows.each do |monitor|
-				monitor.stop
-			end
+			@listener.stop if @listener
 		end
 	end
 end
