@@ -155,5 +155,10 @@ describe FeatherWatch::Watcher do
 			expect(windows_spy).to receive(:stop)
 			FeatherWatch::Watcher.new(path,callback,verbose).stop
 		end
+
+		it "raises error when directory does not exist" do
+			expect{FeatherWatch::Watcher.new("this is not a valid path",callback,verbose)}.to raise_error
+		end
+
 	end
 end
