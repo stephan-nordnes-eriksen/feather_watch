@@ -7,7 +7,7 @@ describe FeatherWatch do
 	end
 
 	it "passen self.new on to FeatherWatch::Watcher" do
-		args = ["/",lambda { |e|  }, false]
+		args = [Dir.pwd,lambda { |e|  }, false]
 		expect(FeatherWatch::Watcher).to receive(:new).with(*args)
 		FeatherWatch.new(*args)
 	end

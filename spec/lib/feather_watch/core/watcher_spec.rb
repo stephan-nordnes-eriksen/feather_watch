@@ -5,8 +5,8 @@ require 'spec_helper'
 describe FeatherWatch::Watcher do
 	describe ".initialize" do
 		it "does not crash" do
-			expect{FeatherWatch::Watcher.new("/",lambda { |e|  })}.to_not raise_error
-			expect{FeatherWatch::Watcher.new("/",lambda { |e|  }, false)}.to_not raise_error
+			expect{FeatherWatch::Watcher.new(Dir.pwd, lambda { |e|  })}.to_not raise_error
+			expect{FeatherWatch::Watcher.new(Dir.pwd, lambda { |e|  }, false)}.to_not raise_error
 		end
 		it "calls DarwinWatcher.new on darwin" do
 			allow(Kernel).to receive(:require).with('rb-fsevent')
@@ -15,7 +15,7 @@ describe FeatherWatch::Watcher do
 			allow(FeatherWatch::OS).to receive(:windows?)  {false}
 			allow(FeatherWatch::OS).to receive(:unix?)     {false}
 			
-			path = "/"
+			path = Dir.pwd
 			callback = lambda { |e|  }
 			verbose = false
 
@@ -30,7 +30,7 @@ describe FeatherWatch::Watcher do
 			allow(FeatherWatch::OS).to receive(:windows?)  {false}
 			allow(FeatherWatch::OS).to receive(:unix?)     {false}
 			
-			path = "/"
+			path = Dir.pwd
 			callback = lambda { |e|  }
 			verbose = false
 
@@ -45,7 +45,7 @@ describe FeatherWatch::Watcher do
 			allow(FeatherWatch::OS).to receive(:windows?)  {true}
 			allow(FeatherWatch::OS).to receive(:unix?)     {false}
 			
-			path = "/"
+			path = Dir.pwd
 			callback = lambda { |e|  }
 			verbose = false
 
@@ -63,7 +63,7 @@ describe FeatherWatch::Watcher do
 			allow(FeatherWatch::OS).to receive(:windows?)  {false}
 			allow(FeatherWatch::OS).to receive(:unix?)     {false}
 			
-			path = "/"
+			path = Dir.pwd
 			callback = lambda { |e|  }
 			verbose = false
 
@@ -79,7 +79,7 @@ describe FeatherWatch::Watcher do
 			allow(FeatherWatch::OS).to receive(:windows?)  {false}
 			allow(FeatherWatch::OS).to receive(:unix?)     {false}
 			
-			path = "/"
+			path = Dir.pwd
 			callback = lambda { |e|  }
 			verbose = false
 
@@ -95,7 +95,7 @@ describe FeatherWatch::Watcher do
 			allow(FeatherWatch::OS).to receive(:windows?)  {true}
 			allow(FeatherWatch::OS).to receive(:unix?)     {false}
 			
-			path = "/"
+			path = Dir.pwd
 			callback = lambda { |e|  }
 			verbose = false
 
@@ -114,7 +114,7 @@ describe FeatherWatch::Watcher do
 			allow(FeatherWatch::OS).to receive(:windows?)  {false}
 			allow(FeatherWatch::OS).to receive(:unix?)     {false}
 			
-			path = "/"
+			path = Dir.pwd
 			callback = lambda { |e|  }
 			verbose = false
 
@@ -130,7 +130,7 @@ describe FeatherWatch::Watcher do
 			allow(FeatherWatch::OS).to receive(:windows?)  {false}
 			allow(FeatherWatch::OS).to receive(:unix?)     {false}
 			
-			path = "/"
+			path = Dir.pwd
 			callback = lambda { |e|  }
 			verbose = false
 
@@ -146,7 +146,7 @@ describe FeatherWatch::Watcher do
 			allow(FeatherWatch::OS).to receive(:windows?)  {true}
 			allow(FeatherWatch::OS).to receive(:unix?)     {false}
 			
-			path = "/"
+			path = Dir.pwd
 			callback = lambda { |e|  }
 			verbose = false
 
