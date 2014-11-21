@@ -12,7 +12,7 @@ module FeatherWatch
 		#   FeatherWatch::Watcher.new([File.join(Dir.home, 'Desktop')], lambda{|e| puts "got event with status: #{e[:status]} on file #{e[:file]}"})
 		#
 		# Returns a Watcher object.
-		def initialize(directories, callback, verbose= false)
+		def initialize(directories, callback, verbose= false, silence_exceptions= false)
 			@verbose = verbose
 			dir = directories
 			dir = [directories] if directories.is_a?(String)
@@ -22,9 +22,9 @@ module FeatherWatch
 				raise "Not a vaild directory: #{d}" unless File.directory?(d)
 			end
 
-			@listener = FeatherWatch::Core::DarwinWatcher.new(dir, callback, verbose)  if FeatherWatch::OS.mac?
-			@listener = FeatherWatch::Core::LinuxWatcher.new(dir, callback, verbose)   if FeatherWatch::OS.linux?
-			@listener = FeatherWatch::Core::WindowsWatcher.new(dir, callback, verbose) if FeatherWatch::OS.windows?
+			@listener = FeatherWatch::Core::DarwinWatcher.new(dir, callback, verbose, silence_exceptions)  if FeatherWatch::OS.mac?
+			@listener = FeatherWatch::Core::LinuxWatcher.new(dir, callback, verbose, silence_exceptions)   if FeatherWatch::OS.linux?
+			@listener = FeatherWatch::Core::WindowsWatcher.new(dir, callback, verbose, silence_exceptions) if FeatherWatch::OS.windows?
 		end
 
 		# Public: Starts the watcher.
