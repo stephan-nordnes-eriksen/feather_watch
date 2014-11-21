@@ -1,7 +1,8 @@
 module FeatherWatch::Core
 	class LinuxWatcher
-		def initialize(directories, callback, verbose= false)
+		def initialize(directories, callback, verbose= false, silence_exceptions= false)
 			@verbose = verbose
+			@silence_exceptions = silence_exceptions
 			puts "Initializing linux watcher" if @verbose
 			@notifiers = []
 			directories.each do |dir|
@@ -11,23 +12,32 @@ module FeatherWatch::Core
 				notifier.watch(dir, :create, :attrib, :delete, :close_write, :delete_self, :modify, :move_self, :moved_from, :moved_to) do |event|
 					#TODO: This information is probably in the event, but I'm on a mac now, so I can't test it properly
 					
-					if    !([:attrib, :close_write, :modify] & event.flags ).empty?
-					puts "Change on file: #{event.absolute_name}" if @verbose
-						callback.call({status: :modified, file: event.absolute_name})
-					elsif !([:moved_to]                      & event.flags ).empty?
-						puts "File added: #{event.absolute_name}"     if @verbose
-						callback.call({status: :added, file: event.absolute_name})
-					elsif !([:moved_from]                    & event.flags ).empty?
-						puts "File removed: #{event.absolute_name}"   if @verbose
-						callback.call({status: :removed, file: event.absolute_name})
-					elsif !([:create]                        & event.flags ).empty?
-						puts "File added: #{event.absolute_name}"     if @verbose
-						callback.call({status: :added, file: event.absolute_name})
-					elsif !([:delete, :delete_self]          & event.flags ).empty?
-						puts "File removed: #{event.absolute_name}"   if @verbose
-						callback.call({status: :removed, file: event.absolute_name})
-					else
-						puts "Unhandled status flags: #{event.flags} for file #{event.absolute_name}" if @verbose
+					begin
+						if    !([:attrib, :close_write, :modify] & event.flags ).empty?
+							puts "Change on file: #{event.absolute_name}" if @verbose
+							callback.call({status: :modified, file: event.absolute_name})
+						elsif !([:moved_to]                      & event.flags ).empty?
+							puts "File added: #{event.absolute_name}"     if @verbose
+							callback.call({status: :added, file: event.absolute_name})
+						elsif !([:moved_from]                    & event.flags ).empty?
+							puts "File removed: #{event.absolute_name}"   if @verbose
+							callback.call({status: :removed, file: event.absolute_name})
+						elsif !([:create]                        & event.flags ).empty?
+							puts "File added: #{event.absolute_name}"     if @verbose
+							callback.call({status: :added, file: event.absolute_name})
+						elsif !([:delete, :delete_self]          & event.flags ).empty?
+							puts "File removed: #{event.absolute_name}"   if @verbose
+							callback.call({status: :removed, file: event.absolute_name})
+						else
+							puts "Unhandled status flags: #{event.flags} for file #{event.absolute_name}" if @verbose
+						end
+					rescue Exception => e
+						unless @silence_exceptions
+							STDERR.puts "----------------------------"
+							STDERR.puts "Error in Feather Watch callback"
+							STDERR.puts "Message: #{e.message}"
+							STDERR.puts "backtrace: #{e.backtrace * "\n\t >"}"
+						end
 					end
 				end
 			end

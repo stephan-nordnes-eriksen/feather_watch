@@ -1,7 +1,8 @@
 module FeatherWatch::Core
 	class WindowsWatcher
-		def initialize(directories, callback, verbose= false)
+		def initialize(directories, callback, verbose= false, silence_exceptions= false)
 			@verbose = verbose
+			@silence_exceptions = silence_exceptions
 			puts "Initializing windows watcher" if @verbose
 			@monitors = []
 			directories.each do |dir|
@@ -10,18 +11,27 @@ module FeatherWatch::Core
 				monitor.watch_recursively(dir, :files) do |change|
 					#TODO: Have not tested this. It should work
 
-					case change.type
-					when :added, :renamed_new_file
-						puts "File added: #{change.path}" if @verbose
-						callback.call({status: :added, file: change.path})
-					when :removed, :renamed_old_file
-						puts "Removed file: #{change.path}" if @verbose
-						callback.call({status: :removed, file: change.path})
-					when :modified, :attrib
-						puts "File modified: #{change.path}" if @verbose
-						callback.call({status: :modified, file: change.path})
-					else
-						puts "Unhandled status type: #{change.type} for file #{change.path}" if @verbose
+					begin
+						case change.type
+						when :added, :renamed_new_file
+							puts "File added: #{change.path}" if @verbose
+							callback.call({status: :added, file: change.path})
+						when :removed, :renamed_old_file
+							puts "Removed file: #{change.path}" if @verbose
+							callback.call({status: :removed, file: change.path})
+						when :modified, :attrib
+							puts "File modified: #{change.path}" if @verbose
+							callback.call({status: :modified, file: change.path})
+						else
+							puts "Unhandled status type: #{change.type} for file #{change.path}" if @verbose
+						end	
+					rescue Exception => e
+						unless @silence_exceptions
+							STDERR.puts "----------------------------"
+							STDERR.puts "Error in Feather Watch callback"
+							STDERR.puts "Message: #{e.message}"
+							STDERR.puts "backtrace: #{e.backtrace * "\n\t >"}"
+						end
 					end
 				end	
 			end
