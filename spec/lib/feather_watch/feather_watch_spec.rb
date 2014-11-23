@@ -17,15 +17,16 @@ describe FeatherWatch do
 		path = File.join(Dir.pwd, "test_folder")
 		callback_spy = spy("Callback Spy")
 		verbose = false
-		
+		silence_exceptions = true
+
 		file_path = File.join(Dir.pwd, "test_folder", "new_file")
 
 		if FeatherWatch::OS.mac?
-			expect(callback_spy).to receive(:call).with({status: :modified ,file: file_path})
+			expect(callback_spy).to receive(:call).with({status: :modified ,file: file_path, event: anything})
 		else
-			expect(callback_spy).to receive(:call).with({status: :added ,file: file_path}) 
+			expect(callback_spy).to receive(:call).with({status: :added ,file: file_path, event: anything}) 
 		end
-
+		sleep 0.1
 		watcher = FeatherWatch::Watcher.new(path,callback_spy,verbose)
 		watcher.start
 		sleep 0.1 #need to wait for watcher to properly start
@@ -42,7 +43,7 @@ describe FeatherWatch do
 		file_path = File.join(Dir.pwd, "test_folder", "new_file")
 		FileUtils.touch(file_path)
 		sleep 0.1 
-		expect(callback_spy).to receive(:call).with({status: :removed ,file: file_path})
+		expect(callback_spy).to receive(:call).with({status: :removed ,file: file_path, event: anything})
 
 		watcher = FeatherWatch::Watcher.new(path,callback_spy,verbose)
 		watcher.start
@@ -63,11 +64,11 @@ describe FeatherWatch do
 		FileUtils.touch(file_path)
 		sleep 0.1 
 		
-		expect(callback_spy).to receive(:call).with({status: :removed ,file: file_path})
+		expect(callback_spy).to receive(:call).with({status: :removed ,file: file_path, event: anything})
 		if FeatherWatch::OS.mac?
-			expect(callback_spy).to receive(:call).with({status: :modified ,file: file_path_new})
+			expect(callback_spy).to receive(:call).with({status: :modified ,file: file_path_new, event: anything})
 		else
-			expect(callback_spy).to receive(:call).with({status: :added ,file: file_path_new}) 
+			expect(callback_spy).to receive(:call).with({status: :added ,file: file_path_new, event: anything}) 
 		end
 
 		watcher = FeatherWatch::Watcher.new(path,callback_spy,verbose)
