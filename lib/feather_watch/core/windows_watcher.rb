@@ -15,13 +15,13 @@ module FeatherWatch::Core
 						case change.type
 						when :added, :renamed_new_file
 							puts "File added: #{change.path}" if @verbose
-							callback.call({status: :added, file: change.path})
+							callback.call({status: :added, file: change.path, event: change})
 						when :removed, :renamed_old_file
 							puts "Removed file: #{change.path}" if @verbose
-							callback.call({status: :removed, file: change.path})
+							callback.call({status: :removed, file: change.path, event: change})
 						when :modified, :attrib
 							puts "File modified: #{change.path}" if @verbose
-							callback.call({status: :modified, file: change.path})
+							callback.call({status: :modified, file: change.path, event: change})
 						else
 							puts "Unhandled status type: #{change.type} for file #{change.path}" if @verbose
 						end	

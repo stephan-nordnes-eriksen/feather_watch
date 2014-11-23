@@ -15,19 +15,19 @@ module FeatherWatch::Core
 					begin
 						if    !([:attrib, :close_write, :modify] & event.flags ).empty?
 							puts "Change on file: #{event.absolute_name}" if @verbose
-							callback.call({status: :modified, file: event.absolute_name})
+							callback.call({status: :modified, file: event.absolute_name, event: event})
 						elsif !([:moved_to]                      & event.flags ).empty?
 							puts "File added: #{event.absolute_name}"     if @verbose
-							callback.call({status: :added, file: event.absolute_name})
+							callback.call({status: :added, file: event.absolute_name, event: event})
 						elsif !([:moved_from]                    & event.flags ).empty?
 							puts "File removed: #{event.absolute_name}"   if @verbose
-							callback.call({status: :removed, file: event.absolute_name})
+							callback.call({status: :removed, file: event.absolute_name, event: event})
 						elsif !([:create]                        & event.flags ).empty?
 							puts "File added: #{event.absolute_name}"     if @verbose
-							callback.call({status: :added, file: event.absolute_name})
+							callback.call({status: :added, file: event.absolute_name, event: event})
 						elsif !([:delete, :delete_self]          & event.flags ).empty?
 							puts "File removed: #{event.absolute_name}"   if @verbose
-							callback.call({status: :removed, file: event.absolute_name})
+							callback.call({status: :removed, file: event.absolute_name, event: event})
 						else
 							puts "Unhandled status flags: #{event.flags} for file #{event.absolute_name}" if @verbose
 						end

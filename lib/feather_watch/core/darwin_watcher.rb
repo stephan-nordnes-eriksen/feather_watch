@@ -13,10 +13,10 @@ module FeatherWatch::Core
 					begin
 						if File.file?(f)
 							puts "Change on file: #{f}" if @verbose
-							callback.call({status: :modified, file: f})
+							callback.call({status: :modified, file: f, event: f})
 						else
 							puts "Removed file: #{f}" if @verbose
-							callback.call({status: :removed, file: f})
+							callback.call({status: :removed, file: f, event: f})
 						end
 					rescue Exception => e
 						unless @silence_exceptions
