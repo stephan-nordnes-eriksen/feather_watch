@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-class INotify
-
+module INotify
 end
 class INotify::Notifier
 end
