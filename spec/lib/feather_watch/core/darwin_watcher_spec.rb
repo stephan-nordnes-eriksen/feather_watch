@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+class FSEvent
+end
 
 describe FeatherWatch::Core::DarwinWatcher do
 	after(:each) do
