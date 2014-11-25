@@ -29,7 +29,7 @@ describe FeatherWatch::Core::DarwinWatcher do
 			expect(STDERR).to receive(:puts).exactly(4).times.with(kind_of(String))
 
 
-			watcher = FeatherWatch::Core::DarwinWatcher.new(path,callback_spy,verbose)
+			watcher = FeatherWatch::Core::DarwinWatcher.new(path,callback_spy,verbose, silence_exceptions)
 			watcher.start
 			
 			expect{the_callback.call([file_path])}.to_not raise_error
@@ -57,7 +57,7 @@ describe FeatherWatch::Core::DarwinWatcher do
 			expect(STDERR).to_not receive(:puts)
 
 
-			watcher = FeatherWatch::Core::DarwinWatcher.new(path,callback_spy,verbose)
+			watcher = FeatherWatch::Core::DarwinWatcher.new(path,callback_spy,verbose, silence_exceptions)
 			watcher.start
 			
 			expect{the_callback.call([file_path])}.to_not raise_error
@@ -89,7 +89,7 @@ describe FeatherWatch::Core::DarwinWatcher do
 			FileUtils.touch(file_path)
 			sleep 0.1
 
-			watcher = FeatherWatch::Core::DarwinWatcher.new(path,callback_spy,verbose)
+			watcher = FeatherWatch::Core::DarwinWatcher.new(path,callback_spy,verbose, silence_exceptions)
 			watcher.start
 			
 			expect{the_callback.call([file_path])}.to_not raise_error
