@@ -277,6 +277,65 @@ describe FeatherWatch::Core::WindowsWatcher do
 
 			watcher.stop
 		end
+
+
+		it "Prints error to STDERR when type is nil and verbose" do
+			wdm_spy = spy("wdm spy")
+			expect(WDM::Monitor).to receive(:new).and_return(wdm_spy)
+			allow(STDOUT).to receive(:puts)
+
+			callback_spy = spy("Callback Spy")
+			verbose = true
+			silence_exceptions = true
+
+			the_callback = nil
+			expect(wdm_spy).to receive(:watch_recursively) do |watch_path, *flags, &callback|
+				the_callback = callback
+				expect(watch_path).to eq(path)
+			end
+
+
+			expect(callback_spy).to_not receive(:call)
+			expect(STDERR).to receive(:puts).exactly(1).times.with(kind_of(String))
+			
+			watcher = FeatherWatch::Core::WindowsWatcher.new(path,callback_spy,verbose, silence_exceptions)
+			watcher.start
+			
+			event_spy = spy("Event spy")
+			allow(event_spy).to receive(:type).and_return(nil)
+			allow(event_spy).to receive(:path).and_return(file_path)
+			the_callback.call(event_spy)
+
+			watcher.stop
+		end
+		it "Does not print to STDERR when type is nil and not verbose" do
+			wdm_spy = spy("wdm spy")
+			expect(WDM::Monitor).to receive(:new).and_return(wdm_spy)
+			
+			callback_spy = spy("Callback Spy")
+			verbose = false
+			silence_exceptions = true
+
+			the_callback = nil
+			expect(wdm_spy).to receive(:watch_recursively) do |watch_path, *flags, &callback|
+				the_callback = callback
+				expect(watch_path).to eq(path)
+			end
+
+
+			expect(callback_spy).to_not receive(:call)
+			expect(STDERR).to_not receive(:puts)
+			
+			watcher = FeatherWatch::Core::WindowsWatcher.new(path,callback_spy,verbose, silence_exceptions)
+			watcher.start
+			
+			event_spy = spy("Event spy")
+			allow(event_spy).to receive(:type).and_return(nil)
+			allow(event_spy).to receive(:path).and_return(file_path)
+			the_callback.call(event_spy)
+
+			watcher.stop
+		end
 	end
 
 end

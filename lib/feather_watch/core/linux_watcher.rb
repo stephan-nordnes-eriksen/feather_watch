@@ -30,7 +30,7 @@ module FeatherWatch::Core
 							puts "File removed: #{event.absolute_name}"   if @verbose
 							callback.call({status: :removed, file: event.absolute_name, event: event})
 						else
-							puts "Unhandled status flags: #{event.flags} for file #{event.absolute_name}" if @verbose
+							STDERR.puts "Unhandled status flags: #{event.flags} for file #{event.absolute_name}" if @verbose
 						end
 					rescue Exception => e
 						unless @silence_exceptions

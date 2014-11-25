@@ -24,7 +24,7 @@ module FeatherWatch::Core
 							puts "File modified: #{change.path}" if @verbose
 							callback.call({status: :modified, file: change.path, event: change})
 						else
-							puts "Unhandled status type: #{change.type} for file #{change.path}" if @verbose
+							STDERR.puts "Unhandled status type: #{change.type} for file #{change.path}" if @verbose
 						end	
 					rescue Exception => e
 						unless @silence_exceptions

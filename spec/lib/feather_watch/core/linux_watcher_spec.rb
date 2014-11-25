@@ -334,6 +334,63 @@ describe FeatherWatch::Core::LinuxWatcher do
 
 			watcher.stop
 		end
+
+		it "Prints error to STDERR when no event flags and verbose" do
+			inotify_spy = spy("inotify spy")
+			expect(INotify::Notifier).to receive(:new).and_return(inotify_spy)
+			
+			callback_spy = spy("Callback Spy")
+			verbose = true
+			silence_exceptions = true
+
+			the_callback = nil
+			expect(inotify_spy).to receive(:watch) do |watch_path, *flags, &callback|
+				the_callback = callback
+				expect(watch_path).to eq(path)
+			end
+
+
+			expect(callback_spy).to_not receive(:call)
+			expect(STDERR).to receive(:puts).exactly(1).times.with(kind_of(String))
+			
+			watcher = FeatherWatch::Core::LinuxWatcher.new(path,callback_spy,verbose, silence_exceptions)
+			watcher.start
+			
+			event_spy = spy("Event spy")
+			allow(event_spy).to receive(:flags).and_return([])
+			allow(event_spy).to receive(:absolute_name).and_return(file_path)
+			the_callback.call(event_spy)
+
+			watcher.stop
+		end
+		it "Does not print to STDERR when no event flags and not verbose" do
+			inotify_spy = spy("inotify spy")
+			expect(INotify::Notifier).to receive(:new).and_return(inotify_spy)
+			
+			callback_spy = spy("Callback Spy")
+			verbose = false
+			silence_exceptions = true
+
+			the_callback = nil
+			expect(inotify_spy).to receive(:watch) do |watch_path, *flags, &callback|
+				the_callback = callback
+				expect(watch_path).to eq(path)
+			end
+
+
+			expect(callback_spy).to_not receive(:call)
+			expect(STDERR).to_not receive(:puts)
+			
+			watcher = FeatherWatch::Core::LinuxWatcher.new(path,callback_spy,verbose, silence_exceptions)
+			watcher.start
+			
+			event_spy = spy("Event spy")
+			allow(event_spy).to receive(:flags).and_return([])
+			allow(event_spy).to receive(:absolute_name).and_return(file_path)
+			the_callback.call(event_spy)
+
+			watcher.stop
+		end
 	end
 
 end
