@@ -5,6 +5,7 @@ module FeatherWatch::Core
 			@silence_exceptions = silence_exceptions
 			puts "Initializing linux watcher" if @verbose
 			@notifiers = []
+			directories = [directories] if directories.is_a?(String)
 			directories.each do |dir|
 				notifier = INotify::Notifier.new
 				@notifiers << notifier

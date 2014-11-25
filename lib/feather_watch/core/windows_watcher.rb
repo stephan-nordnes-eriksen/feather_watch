@@ -5,6 +5,7 @@ module FeatherWatch::Core
 			@silence_exceptions = silence_exceptions
 			puts "Initializing windows watcher" if @verbose
 			@monitors = []
+			directories = [directories] if directories.is_a?(String)
 			directories.each do |dir|
 				monitor = WDM::Monitor.new
 				@monitors << monitor
