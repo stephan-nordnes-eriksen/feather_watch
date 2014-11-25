@@ -4,6 +4,7 @@ require "feather_watch/watcher"
 require "feather_watch/core/darwin_watcher"
 require "feather_watch/core/linux_watcher"
 require "feather_watch/core/windows_watcher"
+require "feather_watch/core/common"
 
 
 require 'rb-fsevent' if FeatherWatch::OS.mac?

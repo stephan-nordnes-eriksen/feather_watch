@@ -1,17 +1,39 @@
 module FeatherWatch::Core
 	class WindowsWatcher
 		def initialize(directories, callback, verbose= false, silence_exceptions= false)
+			puts "Initializing windows watcher" if @verbose
+
 			@verbose = verbose
 			@silence_exceptions = silence_exceptions
-			puts "Initializing windows watcher" if @verbose
-			@monitors = []
 			directories = [directories] if directories.is_a?(String)
+			
+			setup_monitor(directories, callback, verbose, silence_exceptions)
+		end
+		
+		def start
+			puts "Starting windows watcher" if @verbose
+			@monitors.each do |monitor|
+				Thread.new do
+					monitor.run!
+				end
+			end
+		end
+
+		def stop
+			puts "Stopping windows watcher" if @verbose
+			@monitors.each do |monitor|
+				monitor.stop
+			end
+		end
+
+		private
+
+		def setup_monitor(directories, callback, verbose, silence_exceptions)
+			@monitors = []
 			directories.each do |dir|
 				monitor = WDM::Monitor.new
 				@monitors << monitor
 				monitor.watch_recursively(dir, :files) do |change|
-					#TODO: Have not tested this. It should work
-
 					begin
 						case change.type
 						when :added, :renamed_new_file
@@ -28,29 +50,10 @@ module FeatherWatch::Core
 						end	
 					rescue Exception => e
 						unless @silence_exceptions
-							STDERR.puts "----------------------------"
-							STDERR.puts "Error in Feather Watch callback"
-							STDERR.puts "Message: #{e.message}"
-							STDERR.puts "backtrace: #{e.backtrace * "\n\t >"}"
+							FeatherWatch::Core::Common.print_error(e)
 						end
 					end
 				end	
-			end
-		end
-		
-		def start
-			puts "Starting windows watcher" if @verbose
-			@monitors.each do |monitor|
-				Thread.new do
-					monitor.run!
-				end
-			end
-		end
-
-		def stop
-			puts "Stopping windows watcher" if @verbose
-			@monitors.each do |monitor|
-				monitor.stop
 			end
 		end
 	end
