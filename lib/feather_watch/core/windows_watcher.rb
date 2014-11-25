@@ -35,19 +35,22 @@ module FeatherWatch::Core
 				@monitors << monitor
 				monitor.watch_recursively(dir, :files) do |change|
 					begin
+						status = nil
 						case change.type
 						when :added, :renamed_new_file
-							puts "File added: #{change.path}" if @verbose
-							callback.call({status: :added, file: change.path, event: change})
+							status = :added
 						when :removed, :renamed_old_file
-							puts "Removed file: #{change.path}" if @verbose
-							callback.call({status: :removed, file: change.path, event: change})
+							status = :removed
 						when :modified, :attrib
-							puts "File modified: #{change.path}" if @verbose
-							callback.call({status: :modified, file: change.path, event: change})
+							status = :modified
+						end
+
+						if status != nil
+							puts "File #{status.to_s}: #{event.absolute_name}"   if @verbose
+							callback.call({status: status, file: change.path, event: change})
 						else
-							STDERR.puts "Unhandled status type: #{change.type} for file #{change.path}" if @verbose
-						end	
+							STDERR.puts "Unhandled change type: #{change.type} for file #{change.path}" if @verbose
+						end
 					rescue Exception => e
 						unless @silence_exceptions
 							FeatherWatch::Core::Common.print_error(e)

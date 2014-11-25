@@ -2,7 +2,7 @@ module FeatherWatch::Core
 	class LinuxWatcher
 		def initialize(directories, callback, verbose= false, silence_exceptions= false)
 			puts "Initializing linux watcher" if @verbose
-			
+
 			@verbose = verbose
 			@silence_exceptions = silence_exceptions
 			
@@ -37,21 +37,22 @@ module FeatherWatch::Core
 				#Avaliable events: :access, :attrib, :close_write, :close_nowrite, :create, :delete, :delete_self, :ignored, :modify, :move_self, :moved_from, :moved_to, :open
 				notifier.watch(dir, :recursive, :create, :attrib, :delete, :close_write, :delete_self, :modify, :move_self, :moved_from, :moved_to) do |event|
 					begin
+						status = nil
 						if    !([:attrib, :close_write, :modify] & event.flags ).empty?
-							puts "Change on file: #{event.absolute_name}" if @verbose
-							callback.call({status: :modified, file: event.absolute_name, event: event})
+							status = :modified
 						elsif !([:moved_to]                      & event.flags ).empty?
-							puts "File added: #{event.absolute_name}"     if @verbose
-							callback.call({status: :added, file: event.absolute_name, event: event})
+							status = :added
 						elsif !([:moved_from]                    & event.flags ).empty?
-							puts "File removed: #{event.absolute_name}"   if @verbose
-							callback.call({status: :removed, file: event.absolute_name, event: event})
+							status = :removed
 						elsif !([:create]                        & event.flags ).empty?
-							puts "File added: #{event.absolute_name}"     if @verbose
-							callback.call({status: :added, file: event.absolute_name, event: event})
+							status = :added
 						elsif !([:delete, :delete_self]          & event.flags ).empty?
-							puts "File removed: #{event.absolute_name}"   if @verbose
-							callback.call({status: :removed, file: event.absolute_name, event: event})
+							status = :removed
+						end
+						
+						if status != nil
+							puts "File #{status.to_s}: #{event.absolute_name}"   if @verbose
+							callback.call({status: status, file: event.absolute_name, event: event})
 						else
 							STDERR.puts "Unhandled status flags: #{event.flags} for file #{event.absolute_name}" if @verbose
 						end
