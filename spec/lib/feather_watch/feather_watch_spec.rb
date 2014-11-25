@@ -27,7 +27,7 @@ describe FeatherWatch do
 			expect(callback_spy).to receive(:call).with({status: :added ,file: file_path, event: anything}) 
 		end
 		sleep 0.1
-		watcher = FeatherWatch::Watcher.new(path,callback_spy,verbose)
+		watcher = FeatherWatch::Watcher.new(path,callback_spy,verbose, silence_exceptions)
 		watcher.start
 		sleep 0.1 #need to wait for watcher to properly start
 		FileUtils.touch(file_path)
@@ -45,7 +45,7 @@ describe FeatherWatch do
 		sleep 0.1 
 		expect(callback_spy).to receive(:call).with({status: :removed ,file: file_path, event: anything})
 
-		watcher = FeatherWatch::Watcher.new(path,callback_spy,verbose)
+		watcher = FeatherWatch::Watcher.new(path,callback_spy,verbose, silence_exceptions)
 		watcher.start
 		sleep 0.1 #need to wait for watcher to properly start
 		FileUtils.rm(file_path)
@@ -71,7 +71,7 @@ describe FeatherWatch do
 			expect(callback_spy).to receive(:call).with({status: :added ,file: file_path_new, event: anything}) 
 		end
 
-		watcher = FeatherWatch::Watcher.new(path,callback_spy,verbose)
+		watcher = FeatherWatch::Watcher.new(path,callback_spy,verbose, silence_exceptions)
 		watcher.start
 		sleep 0.1 #need to wait for watcher to properly start
 		FileUtils.mv(file_path, file_path_new)
