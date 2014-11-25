@@ -338,6 +338,7 @@ describe FeatherWatch::Core::LinuxWatcher do
 		it "Prints error to STDERR when no event flags and verbose" do
 			inotify_spy = spy("inotify spy")
 			expect(INotify::Notifier).to receive(:new).and_return(inotify_spy)
+			allow(STDOUT).to receive(:puts)
 			
 			callback_spy = spy("Callback Spy")
 			verbose = true
