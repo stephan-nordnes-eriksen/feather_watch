@@ -16,7 +16,7 @@ describe FeatherWatch::Core::LinuxWatcher do
 	end
 	describe ".initialize" do
 		it "catches exceptions in user callback and print to STDERR" do
-			inotify_spy = spy("FSEvent spy")
+			inotify_spy = spy("inotify spy")
 			expect(INotify::Notifier).to receive(:new).and_return(inotify_spy)
 			
 			callback_spy = spy("Callback Spy")
@@ -45,7 +45,7 @@ describe FeatherWatch::Core::LinuxWatcher do
 			watcher.stop
 		end
 		it "executes callback with :removed if file does not exist" do
-			inotify_spy = spy("FSEvent spy")
+			inotify_spy = spy("inotify spy")
 			expect(INotify::Notifier).to receive(:new).and_return(inotify_spy)
 			
 			callback_spy = spy("Callback Spy")
@@ -75,7 +75,7 @@ describe FeatherWatch::Core::LinuxWatcher do
 		end
 
 		it "executes callback with :modified if file exist" do
-			inotify_spy = spy("FSEvent spy")
+			inotify_spy = spy("inotify spy")
 			expect(INotify::Notifier).to receive(:new).and_return(inotify_spy)
 			
 			callback_spy = spy("Callback Spy")
@@ -106,7 +106,7 @@ describe FeatherWatch::Core::LinuxWatcher do
 
 
 		it "inotify-event with :attrib produces :modified FeatherWatch-event" do
-			inotify_spy = spy("FSEvent spy")
+			inotify_spy = spy("inotify spy")
 			expect(INotify::Notifier).to receive(:new).and_return(inotify_spy)
 			
 			callback_spy = spy("Callback Spy")
@@ -134,7 +134,7 @@ describe FeatherWatch::Core::LinuxWatcher do
 			watcher.stop
 		end
 		it "inotify-event with :close_write produces :modified FeatherWatch-event" do
-			inotify_spy = spy("FSEvent spy")
+			inotify_spy = spy("inotify spy")
 			expect(INotify::Notifier).to receive(:new).and_return(inotify_spy)
 			
 			callback_spy = spy("Callback Spy")
@@ -162,7 +162,7 @@ describe FeatherWatch::Core::LinuxWatcher do
 			watcher.stop
 		end
 		it "inotify-event with :modify produces :modified FeatherWatch-event" do
-			inotify_spy = spy("FSEvent spy")
+			inotify_spy = spy("inotify spy")
 			expect(INotify::Notifier).to receive(:new).and_return(inotify_spy)
 			
 			callback_spy = spy("Callback Spy")
@@ -192,7 +192,7 @@ describe FeatherWatch::Core::LinuxWatcher do
 		
 
 		it "inotify-event with :moved_to produces :added FeatherWatch-event" do
-			inotify_spy = spy("FSEvent spy")
+			inotify_spy = spy("inotify spy")
 			expect(INotify::Notifier).to receive(:new).and_return(inotify_spy)
 			
 			callback_spy = spy("Callback Spy")
@@ -221,7 +221,7 @@ describe FeatherWatch::Core::LinuxWatcher do
 		end
 
 		it "inotify-event with :moved_from produces :removed FeatherWatch-event" do
-			inotify_spy = spy("FSEvent spy")
+			inotify_spy = spy("inotify spy")
 			expect(INotify::Notifier).to receive(:new).and_return(inotify_spy)
 			
 			callback_spy = spy("Callback Spy")
@@ -250,7 +250,7 @@ describe FeatherWatch::Core::LinuxWatcher do
 		end
 
 		it "inotify-event with :create produces :added FeatherWatch-event" do
-			inotify_spy = spy("FSEvent spy")
+			inotify_spy = spy("inotify spy")
 			expect(INotify::Notifier).to receive(:new).and_return(inotify_spy)
 			
 			callback_spy = spy("Callback Spy")
@@ -279,7 +279,7 @@ describe FeatherWatch::Core::LinuxWatcher do
 		end
 
 		it "inotify-event with :delete produces :removed FeatherWatch-event" do
-			inotify_spy = spy("FSEvent spy")
+			inotify_spy = spy("inotify spy")
 			expect(INotify::Notifier).to receive(:new).and_return(inotify_spy)
 			
 			callback_spy = spy("Callback Spy")
@@ -307,7 +307,7 @@ describe FeatherWatch::Core::LinuxWatcher do
 			watcher.stop
 		end
 		it "inotify-event with :delete_self produces :removed FeatherWatch-event" do
-			inotify_spy = spy("FSEvent spy")
+			inotify_spy = spy("inotify spy")
 			expect(INotify::Notifier).to receive(:new).and_return(inotify_spy)
 			
 			callback_spy = spy("Callback Spy")
