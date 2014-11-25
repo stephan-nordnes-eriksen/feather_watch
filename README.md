@@ -5,7 +5,11 @@ Light weight, cross platform, file system watcher.
 
 (!) Should work on windows, but I have not yet tested it because I do not have access to a windows machine right now. If you do, I would love for you to run the specs and see if it works :)
 
+[![Gem Version](https://badge.fury.io/rb/feather_watch.svg)](http://badge.fury.io/rb/feather_watch)
 [![Build Status](https://travis-ci.org/stephan-nordnes-eriksen/feather_watch.svg?branch=master)](https://travis-ci.org/stephan-nordnes-eriksen/feather_watch)
+[![Coverage Status](https://img.shields.io/coveralls/stephan-nordnes-eriksen/feather_watch.svg)](https://coveralls.io/r/stephan-nordnes-eriksen/feather_watch)
+[![Code Climate](https://codeclimate.com/github/stephan-nordnes-eriksen/feather_watch/badges/gpa.svg)](https://codeclimate.com/github/stephan-nordnes-eriksen/feather_watch)
+
 
 ## Installation
 
