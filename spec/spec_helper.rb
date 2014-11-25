@@ -16,6 +16,9 @@ end
 require 'simplecov'
 SimpleCov.start
 
+require 'coveralls'
+Coveralls.wear!
+
 require "feather_watch"
 require "fileutils"
 
