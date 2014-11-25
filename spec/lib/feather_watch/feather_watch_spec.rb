@@ -39,7 +39,8 @@ describe FeatherWatch do
 		path = File.join(Dir.pwd, "test_folder")
 		callback_spy = spy("Callback Spy")
 		verbose = false
-		
+		silence_exceptions = true
+
 		file_path = File.join(Dir.pwd, "test_folder", "new_file")
 		FileUtils.touch(file_path)
 		sleep 0.1 
@@ -57,6 +58,7 @@ describe FeatherWatch do
 		path = File.join(Dir.pwd, "test_folder")
 		callback_spy = spy("Callback Spy")
 		verbose = false
+		silence_exceptions = true
 		
 		file_path = File.join(Dir.pwd, "test_folder", "new_file")
 		file_path_new = File.join(Dir.pwd, "test_folder", "new_file_new")
