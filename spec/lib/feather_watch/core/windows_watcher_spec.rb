@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-class WDM
+module WDM
 
 end
 class WDM::Monitor
