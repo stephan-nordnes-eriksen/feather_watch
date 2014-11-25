@@ -16,7 +16,7 @@ describe FeatherWatch::Core::DarwinWatcher do
 			file_path = File.join(Dir.pwd, "test_folder", "new_file")
 			callback_spy = spy("Callback Spy")
 			verbose = false
-			silence_exceptions = true
+			silence_exceptions = false
 
 			the_callback = nil
 			expect(fse_spy).to receive(:watch) do |watch_paths, options=nil, &block|
