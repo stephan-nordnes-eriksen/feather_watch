@@ -9,6 +9,7 @@ Light weight, cross platform, file system watcher.
 [![Build Status](https://travis-ci.org/stephan-nordnes-eriksen/feather_watch.svg?branch=master)](https://travis-ci.org/stephan-nordnes-eriksen/feather_watch)
 [![Coverage Status](https://img.shields.io/coveralls/stephan-nordnes-eriksen/feather_watch.svg)](https://coveralls.io/r/stephan-nordnes-eriksen/feather_watch)
 [![Code Climate](https://codeclimate.com/github/stephan-nordnes-eriksen/feather_watch/badges/gpa.svg)](https://codeclimate.com/github/stephan-nordnes-eriksen/feather_watch)
+[![feather_watch API Documentation](https://www.omniref.com/ruby/gems/feather_watch.png)](https://www.omniref.com/ruby/gems/feather_watch)
 [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=stephan.n.eriksen&url=https://github.com/stephan-nordnes-eriksen/feather_watch&title=feather_watch&language=ruby&tags=github&category=software)
 
 
