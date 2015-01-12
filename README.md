@@ -2,9 +2,6 @@
 
 Light weight, cross platform, file system watcher. 
 
-
-(!) Should work on windows, but I have not yet tested it because I do not have access to a windows machine right now. If you do, I would love for you to run the specs and see if it works :)
-
 [![Gem Version](https://badge.fury.io/rb/feather_watch.svg)](http://badge.fury.io/rb/feather_watch)
 [![Build Status](https://travis-ci.org/stephan-nordnes-eriksen/feather_watch.svg?branch=master)](https://travis-ci.org/stephan-nordnes-eriksen/feather_watch)
 [![Coverage Status](https://img.shields.io/coveralls/stephan-nordnes-eriksen/feather_watch.svg)](https://coveralls.io/r/stephan-nordnes-eriksen/feather_watch)
@@ -61,7 +58,9 @@ Feather Watch will receive very many file events, even for temp files. Care shou
 You need to take care to filter out what you do not need for each target platform. 
 
 
+### Quirks:
 
+All tests succeed individually on Windows, however, if they are run at the same time usring the command `rspec` some of the tests fail. This is due to file locking which is currently unresolved.
 
 
 ## Contributing
