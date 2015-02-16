@@ -14,10 +14,14 @@ end
 #END
 
 require 'simplecov'
+require 'coveralls'
+
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+  SimpleCov::Formatter::HTMLFormatter,
+  Coveralls::SimpleCov::Formatter
+]
 SimpleCov.start
 
-require 'coveralls'
-Coveralls.wear!
 
 require "feather_watch"
 require "fileutils"
