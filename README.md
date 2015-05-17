@@ -62,6 +62,9 @@ You need to take care to filter out what you do not need for each target platfor
 
 All tests succeed individually on Windows, however, if they are run at the same time usring the command `rspec` some of the tests fail. This is due to file locking which is currently unresolved.
 
+## License:
+
+MIT
 
 ## Contributing
 
